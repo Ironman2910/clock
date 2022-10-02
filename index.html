@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock</title>
+    <style>
+      :root {
+        --primary-color: white;
+        --secondar-color: black;
+      }
+
+      html.black {
+        --primary-color: black;
+        --secondar-color: white;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--primary-color);
+        color: var(--secondar-color);
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        width: 30vw;
+        height: 30vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .clock {
+        position: relative;
+        flex-basis: 60%;
+      }
+
+      .hand {
+        position: absolute;
+        width: 2px;
+        height: 55%;
+        border: 1px solid var(--secondar-color);
+        left: 50%;
+        top: 50%;
+        transform-origin: bottom center;
+        transform: translateY(-100%) translateX(-50%) rotate(0deg);
+      }
+
+      .hour {
+        height: 40%;
+      }
+
+      .second {
+        border-color: red;
+      }
+
+      .bigger-center {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        border-radius: 50%;
+        border-color: red;
+        background-color: red;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .smaller-center {
+        width: 6px;
+        height: 6px;
+        position: absolute;
+        border-radius: 50%;
+        border-color: var(--secondar-color);
+        background-color: var(--secondar-color);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      button {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        padding: 16px;
+        background-color: var(--secondar-color);
+        color: var(--primary-color);
+        border-radius: 10%;
+      }
+
+      .written {
+        flex-basis: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .written-time {
+        flex-basis: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+      }
+
+      .monthAndDate {
+        flex-basis: 30%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      span {
+        background-color: var(--secondar-color);
+        color: var(--primary-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="clock">
+        <div class="hand hour"></div>
+        <div class="hand minute"></div>
+        <div class="hand second"></div>
+        <div class="bigger-center"></div>
+        <div class="smaller-center"></div>
+      </div>
+
+      <div class="written">
+        <div class="written-time">12:00</div>
+        <div class="monthAndDate">OCT,<span>01</span></div>
+      </div>
+
+      <button>DARK MODE</button>
+    </div>
+
+    <script>
+      let hourHand = document.querySelector(".hour");
+      let minuteHand = document.querySelector(".minute");
+      let secondHand = document.querySelector(".second");
+      let writtenTime = document.querySelector(".written-time");
+      let monthAndDate = document.querySelector(".monthAndDate");
+      let months = [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC",
+      ];
+      let btn = document.querySelector("button");
+
+      btn.addEventListener("click", function () {
+        document.documentElement.classList.toggle("black");
+
+        if (document.documentElement.classList.contains("black")) {
+          btn.innerText = "WHITE MODE";
+        } else {
+          btn.innerText = "DARK MODE";
+        }
+      });
+
+      function clock() {
+        let obj = new Date();
+        let minutes = obj.getMinutes();
+        let seconds = obj.getSeconds();
+        let hours = obj.getHours() % 12;
+
+        secondHand.style.transform = `translateY(-100%) translateX(-50%) rotate(${
+          seconds * 6
+        }deg)`;
+        minuteHand.style.transform = `translateY(-100%) translateX(-50%) rotate(${
+          minutes * 6
+        }deg)`;
+
+        hourHand.style.transform = `translateY(-100%) translateX(-50%) rotate(${
+          hours * 30
+        }deg)`;
+
+        writtenTime.innerText = `${
+          (hours <= 9 ? "0" + hours : hours) +
+          ":" +
+          (minutes <= 9 ? "0" + minutes : minutes)
+        }`;
+
+        monthAndDate.innerHTML = `${months[obj.getMonth()]},<span>${
+          obj.getDate() <= 9 ? "0" + obj.getDate() : obj.getDate()
+        }</span>`;
+      }
+
+      setInterval(clock, 1000);
+    </script>
+  </body>
+</html>
